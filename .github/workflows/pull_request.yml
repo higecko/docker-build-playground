@@ -103,10 +103,8 @@ jobs:
         
       - name: Tag test image
         run: |
-          docker tag test:local "stonedgecko/$repository:$GITHUB_HEAD_REF"
-          docker tag test:local "stonedgecko/$repository:$GITHUB_HEAD_REF-$GITHUB_RUN_ID"
-        env:
-          $repository: ${{ env.REPOSITORY }}
+          docker tag test:local "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF"
+          docker tag test:local "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF-$GITHUB_RUN_ID"
           
       - name: Image list
         run: docker image ls
