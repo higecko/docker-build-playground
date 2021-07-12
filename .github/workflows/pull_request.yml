@@ -13,6 +13,7 @@ on:
 
 env:
   BEDROCK_SERVER_VERSION: '1.16.220.02'
+  REPOSITORY: 'build-playground-dev'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -99,3 +100,15 @@ jobs:
 #           path: ./goss_test_out.txt
       - name: Say Hello
         run: echo Hello World!
+        
+      - name: Tag test image
+        run: |
+          docker tag test:local "stonedgecko/$repository:$branch"
+          docker tag test:local "stonedgecko/$repository:$branch-$run"
+        env:
+          repository: ${{ env.REPOSITORY }}
+          branch: ${{ env.GITHUB_HEAD_REF }}
+          run: ${{ env.GITHUB_RUN_ID }}
+          
+      - name: Image list
+        run: docker image ls
