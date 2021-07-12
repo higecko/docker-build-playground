@@ -127,24 +127,25 @@ jobs:
         run: |
           docker push "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF"
           docker push "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF-$GITHUB_RUN_ID"
-          
-      - name: Update Docker Hub Description
-        # You may pin to the exact commit or the version.
-        # uses: peter-evans/dockerhub-description@616d1b63e806b630b975af3b4fe3304307b20f40
-        uses: peter-evans/dockerhub-description@v2.4.3
-        with:
-          # Docker Hub username
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          # Docker Hub password
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          # Docker Hub repository in the format `<namespace>/<name>` Default: `github.repository`
+        
+        # Pending docker hub rollout: https://github.com/docker/roadmap/issues/115
+#       - name: Update Docker Hub Description
+#         # You may pin to the exact commit or the version.
+#         # uses: peter-evans/dockerhub-description@616d1b63e806b630b975af3b4fe3304307b20f40
+#         uses: peter-evans/dockerhub-description@v2.4.3
+#         with:
+#           # Docker Hub username
+#           username: ${{ secrets.DOCKER_HUB_USERNAME }}
+#           # Docker Hub password
+#           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+#           # Docker Hub repository in the format `<namespace>/<name>` Default: `github.repository`
 
-          repository: ${{ env.REPOSITORY }}
-          # Docker Hub repository short description Input exceeding 100 characters will be truncated
+#           repository: stonedgecko/${{ env.REPOSITORY }}
+#           # Docker Hub repository short description Input exceeding 100 characters will be truncated
 
-          # short-description: # optional
-          # Path to the repository readme Default: `./README.md`
+#           # short-description: # optional
+#           # Path to the repository readme Default: `./README.md`
 
-          readme-filepath: ./readme.md
+#           readme-filepath: ./readme.md
           
     
