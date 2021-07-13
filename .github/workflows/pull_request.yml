@@ -27,6 +27,35 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v2
+        
+      - name: Docker Metadata action
+        id: metadata
+        # You may pin to the exact commit or the version.
+        # uses: docker/metadata-action@f6efe56d565add159ad605568120f5b22712a870
+        uses: docker/metadata-action@v3.4.0
+        with:
+          # List of Docker images to use as base name for tags
+          images: 
+          # List of tags as key-value pair attributes
+          tags: # optional
+          # Flavors to apply
+          flavor: # optional
+          # List of custom labels
+          labels: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+          # Separator to use for tags output (default \n)
+          sep-tags: # optional
+          # Separator to use for labels output (default \n)
+          sep-labels: # optional
+          # Bake target name (default docker-metadata-action)
+          bake-target: # optional
+          # GitHub Token as provided by secrets
+          github-token: # default is ${{ github.token }}
 
       # Sets up Docker Buildx
       - name: Docker Setup Buildx
@@ -50,7 +79,8 @@ jobs:
 #           # Path to the Dockerfile
 #           file: # optional
 #           # List of metadata for an image
-#           labels: # optional
+          labels: {{ steps.metadata.outputs.labels }}
+          
 #           # Load is a shorthand for --output=type=docker
           load: true
 #           # Set the networking mode for the RUN instructions during build
