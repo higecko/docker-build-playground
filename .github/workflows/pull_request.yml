@@ -79,7 +79,7 @@ jobs:
 #           # Path to the Dockerfile
 #           file: # optional
 #           # List of metadata for an image
-          labels: {{ steps.metadata.outputs.labels }}
+          labels: ${{ steps.metadata.outputs.labels }}
           
 #           # Load is a shorthand for --output=type=docker
           load: true
