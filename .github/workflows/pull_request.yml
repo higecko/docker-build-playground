@@ -43,7 +43,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha# optional
+            type=sha
           # Flavors to apply
 #           flavor: # optional
           # List of custom labels
