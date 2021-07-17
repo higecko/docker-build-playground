@@ -35,7 +35,8 @@ jobs:
         uses: docker/metadata-action@v3.4.0
         with:
           # List of Docker images to use as base name for tags
-          images: 
+          images:
+          - stonedgecko/{{ $env.REPOSITORY }}
           # List of tags as key-value pair attributes
           tags: # optional
           # Flavors to apply
