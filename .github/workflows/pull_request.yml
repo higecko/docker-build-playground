@@ -151,17 +151,18 @@ jobs:
           # Password or personal access token used to log against the Docker registry
           password:  ${{ secrets.DOCKER_HUB_PASSWORD }}
           # Log out from the Docker registry at the end of a job
-          # logout: # optional, default is true
+          # logout: # optional, default is 
           
-      - name: Tag-Push Action
+      - name: Promote Docker Images
         # You may pin to the exact commit or the version.
-        # uses: akhilerm/tag-push-action@0b1ac4285d74bfe8c5595a1f916b4b155f09bdb8
-        uses: akhilerm/tag-push-action@v1.1.0
+        # uses: EuphoricSystems/docker-promote-image@979b1e4078d81b66b6a0d3861dc5da18833006fa
+        uses: EuphoricSystems/docker-promote-image@1.0.0
         with:
-          # Source tag
+          # The source image {registry}/{image}:{tag}
           src: test:local
-          # Destination tags
-          dst: ${{steps.metadata.outputs.labels}}
+          # List of all the destinations images {registry}/{image}:{tag}
+          destinations: ${{steps.metadata.outputs.tags}}
+
 
 #       - name: Publish test images
 #         run: |
