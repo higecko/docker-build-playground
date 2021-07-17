@@ -36,7 +36,7 @@ jobs:
         with:
           # List of Docker images to use as base name for tags
           images:
-          - stonedgecko/{{ $env.REPOSITORY }}
+          - stonedgecko/${{env.REPOSITORY}}
           # List of tags as key-value pair attributes
           tags: # optional
           # Flavors to apply
@@ -68,7 +68,7 @@ jobs:
 #           # List of extra privileged entitlement (eg. network.host,security.insecure)
 #           allow: # optional
 #           # List of build-time variables
-          build-args: 'BDS_VERSION=${{ env.BEDROCK_SERVER_VERSION }}'
+          build-args: 'BDS_VERSION=${{env.BEDROCK_SERVER_VERSION}}'
 #           # Builder instance
 #           builder: # optional
 #           # List of external cache sources for buildx (eg. user/app:cache, type=local,src=path/to/dir)
@@ -80,7 +80,7 @@ jobs:
 #           # Path to the Dockerfile
 #           file: # optional
 #           # List of metadata for an image
-          labels: ${{ steps.metadata.outputs.labels }}
+          labels: ${{steps.metadata.outputs.labels}}
           
 #           # Load is a shorthand for --output=type=docker
           load: true
