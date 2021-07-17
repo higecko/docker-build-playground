@@ -35,7 +35,7 @@ jobs:
         uses: docker/metadata-action@v3.4.0
         with:
           # List of Docker images to use as base name for tags
-          images: name/app
+          images: stonedgecko/${{env.REPOSITORY}}
           # List of tags as key-value pair attributes
           tags: # optional
           # Flavors to apply
@@ -49,13 +49,13 @@ jobs:
             type=semver,pattern={{major}}
             type=sha
           # Separator to use for tags output (default \n)
-          sep-tags: # optional
+          # sep-tags: # optional
           # Separator to use for labels output (default \n)
-          sep-labels: # optional
+          # sep-labels: # optional
           # Bake target name (default docker-metadata-action)
-          bake-target: # optional
+          # bake-target: # optional
           # GitHub Token as provided by secrets
-          github-token: # default is ${{ github.token }}
+          # github-token: # default is ${{ github.token }}
 
       # Sets up Docker Buildx
       - name: Docker Setup Buildx
