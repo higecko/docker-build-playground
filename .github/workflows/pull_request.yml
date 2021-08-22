@@ -13,6 +13,7 @@ on:
 
 env:
   BEDROCK_SERVER_VERSION: '1.16.220.02'
+  REPOSITORY: 'build-playground-dev'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -26,6 +27,23 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v2
+        
+      - name: Docker Metadata action
+        id: metadata
+        # You may pin to the exact commit or the version.
+        # uses: docker/metadata-action@f6efe56d565add159ad605568120f5b22712a870
+        uses: docker/metadata-action@v3.4.0
+        with:
+          # List of Docker images to use as base name for tags
+          images: stonedgecko/${{env.REPOSITORY}}
+          # List of tags as key-value pair attributes
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
 
       # Sets up Docker Buildx
       - name: Docker Setup Buildx
@@ -34,48 +52,10 @@ jobs:
       - name: Build Docker Image
         uses: docker/build-push-action@v2.4.0
         with:
-#           # List of extra privileged entitlement (eg. network.host,security.insecure)
-#           allow: # optional
-#           # List of build-time variables
-          build-args: 'BDS_VERSION=${{ env.BEDROCK_SERVER_VERSION }}'
-#           # Builder instance
-#           builder: # optional
-#           # List of external cache sources for buildx (eg. user/app:cache, type=local,src=path/to/dir)
-#           cache-from: # optional
-#           # List of cache export destinations for buildx (eg. user/app:cache, type=local,dest=path/to/dir)
-#           cache-to: # optional
-#           # Build's context is the set of files located in the specified PATH or URL
-#           context: # optional
-#           # Path to the Dockerfile
-#           file: # optional
-#           # List of metadata for an image
-#           labels: # optional
-#           # Load is a shorthand for --output=type=docker
+          build-args: 'BDS_VERSION=${{env.BEDROCK_SERVER_VERSION}}'
+          labels: ${{steps.metadata.outputs.labels}}       
           load: true
-#           # Set the networking mode for the RUN instructions during build
-#           network: # optional
-#           # Do not use cache when building the image
-#           no-cache: # optional, default is false
-#           # List of output destinations (format: type=local,dest=path)
-#           outputs: # optional
-#           # List of target platforms for build
-#           platforms: # optional
-#           # Always attempt to pull a newer version of the image
-#           pull: # optional, default is false
-#           # Push is a shorthand for --output=type=registry
-#           push: # optional, default is false
-#           # List of secrets to expose to the build (eg. key=string, GIT_AUTH_TOKEN=mytoken)
-#           secrets: # optional
-#           # List of secret files to expose to the build (eg. key=filename, MY_SECRET=./secret.txt)
-#           secret-files: # optional
-#           # List of SSH agent socket or keys to expose to the build
-#           ssh: # optional
-#           # List of tags
-          tags: test:local
-#           # Sets the target stage to build
-#           target: # optional
-#           # GitHub Token used to authenticate against a repository for Git context
-#           github-token: # optional, default is ${{ github.token }}
+          tags: local/test:local
       
       - name: Install Goss
         # You may pin to the exact commit or the version.
@@ -86,7 +66,7 @@ jobs:
           version: v0.3.9
       
 #       - name: Test image
-#         run: dgoss run -d --name test -it test:local
+#         run: dgoss run -d --name test -it local/test:local
 #         env:
 #           GOSS_SLEEP: 5
 #           CONTAINER_LOG_OUTPUT: ./goss_test_out.txt
@@ -97,5 +77,41 @@ jobs:
 #         with:
 #           name: goss-container-log
 #           path: ./goss_test_out.txt
-      - name: Say Hello
-        run: echo Hello World!
+
+      - name: Tag test image
+        run: |
+          docker tag local/test:local "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF"
+        
+      - name: Docker Login
+      # You may pin to the exact commit or the version.
+      # uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        uses: docker/login-action@v1.10.0
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password:  ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Publish test images
+        run: |
+          docker push "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF"
+        
+        # Pending docker hub rollout: https://github.com/docker/roadmap/issues/115
+#       - name: Update Docker Hub Description
+#         # You may pin to the exact commit or the version.
+#         # uses: peter-evans/dockerhub-description@616d1b63e806b630b975af3b4fe3304307b20f40
+#         uses: peter-evans/dockerhub-description@v2.4.3
+#         with:
+#           # Docker Hub username
+#           username: ${{ secrets.DOCKER_HUB_USERNAME }}
+#           # Docker Hub password
+#           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+#           # Docker Hub repository in the format `<namespace>/<name>` Default: `github.repository`
+
+#           repository: stonedgecko/${{ env.REPOSITORY }}
+#           # Docker Hub repository short description Input exceeding 100 characters will be truncated
+
+#           # short-description: # optional
+#           # Path to the repository readme Default: `./README.md`
+
+#           readme-filepath: ./readme.md
+          
+    
