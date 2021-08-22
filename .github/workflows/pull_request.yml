@@ -65,22 +65,22 @@ jobs:
           # Goss release version to install
           version: v0.3.9
       
-      - name: Test image
-        run: dgoss run -d --name test -it local/test:local
-        env:
-          GOSS_SLEEP: 5
-          CONTAINER_LOG_OUTPUT: ./goss_test_out.txt
+#       - name: Test image
+#         run: dgoss run -d --name test -it local/test:local
+#         env:
+#           GOSS_SLEEP: 5
+#           CONTAINER_LOG_OUTPUT: ./goss_test_out.txt
 
-      - name: Upload goss output
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: goss-container-log
-          path: ./goss_test_out.txt
+#       - name: Upload goss output
+#         if: ${{ failure() }}
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: goss-container-log
+#           path: ./goss_test_out.txt
 
       - name: Tag test image
         run: |
-          docker tag test:local "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF"
+          docker tag local/test:local "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF"
         
       - name: Docker Login
       # You may pin to the exact commit or the version.
