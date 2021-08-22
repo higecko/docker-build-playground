@@ -35,7 +35,7 @@ jobs:
         uses: docker/metadata-action@v3.4.0
         with:
           # List of Docker images to use as base name for tags
-          images: ${{ secrets.DOCKER_HUB_USERNAME }}/${{env.REPOSITORY}}
+          images: stonedgecko/${{env.REPOSITORY}}
           # List of tags as key-value pair attributes
           tags: |
             type=ref,event=branch
@@ -65,31 +65,22 @@ jobs:
           # Goss release version to install
           version: v0.3.9
       
-#       - name: Test image
-#         run: dgoss run -d --name test -it test:local
-#         env:
-#           GOSS_SLEEP: 5
-#           CONTAINER_LOG_OUTPUT: ./goss_test_out.txt
+      - name: Test image
+        run: dgoss run -d --name test -it test:local
+        env:
+          GOSS_SLEEP: 5
+          CONTAINER_LOG_OUTPUT: ./goss_test_out.txt
 
-#       - name: Upload goss output
-#         if: ${{ failure() }}
-#         uses: actions/upload-artifact@v2
-#         with:
-#           name: goss-container-log
-#           path: ./goss_test_out.txt
-      - name: Say Hello
-        run: echo Hello World!
+      - name: Upload goss output
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: goss-container-log
+          path: ./goss_test_out.txt
 
-#       - name: Tag test image
-#         run: |
-#           docker tag test:local "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF"
-#           docker tag test:local "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF-$GITHUB_RUN_ID"
-      - name: Tag test images
+      - name: Tag test image
         run: |
-            echo "${{steps.metadata.outputs.tags}}"
-          
-#       - name: Image list
-#         run: docker image ls
+          docker tag test:local "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF"
         
       - name: Docker Login
       # You may pin to the exact commit or the version.
@@ -98,22 +89,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password:  ${{ secrets.DOCKER_HUB_PASSWORD }}
-          
-#       - name: Promote Docker Images
-#         # You may pin to the exact commit or the version.
-#         # uses: EuphoricSystems/docker-promote-image@979b1e4078d81b66b6a0d3861dc5da18833006fa
-#         uses: EuphoricSystems/docker-promote-image@1.0.0
-#         with:
-#           # The source image {registry}/{image}:{tag}
-#           src: local/test:local
-#           # List of all the destinations images {registry}/{image}:{tag}
-#           destinations: ${{steps.metadata.outputs.tags}}
 
-
-#       - name: Publish test images
-#         run: |
-#           docker push "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF"
-#           docker push "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF-$GITHUB_RUN_ID"
+      - name: Publish test images
+        run: |
+          docker push "stonedgecko/$REPOSITORY:$GITHUB_HEAD_REF"
         
         # Pending docker hub rollout: https://github.com/docker/roadmap/issues/115
 #       - name: Update Docker Hub Description
